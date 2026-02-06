@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Be My Valentine</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: radial-gradient(circle at 20% 20%, #ff9fbb 0%, #ff5c8a 45%, #c2185b 100%);
+      font-family: "Trebuchet MS", "Segoe UI", cursive, sans-serif;
+      overflow: hidden;
+      cursor: pointer;
+      padding-top: 90px;
+      text-align: center;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.12), rgba(0,0,0,0.25));
+      pointer-events: none;
+    }
+
+    h1 {
+      font-size: 42px;
+      margin-bottom: 46px;
+      letter-spacing: 0.6px;
+      background: linear-gradient(135deg, #ffffff, #ffd6e5);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      position: relative;
+      animation: titleFloat 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes titleFloat {
+      from { transform: translateY(0); }
+      to { transform: translateY(-6px); }
+    }
+
+    h1::after {
+      content: "🎀";
+      position: absolute;
+      top: -32px;
+      right: -70px;
+      font-size: 46px;
+      transform: rotate(45deg);
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,0.35));
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 26px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+      z-index: 3;
+    }
+
+    button {
+      padding: 18px 36px;
+      font-size: 20px;
+      border: none;
+      border-radius: 22px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      z-index: 3;
+      position: relative;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    /* YES button darker pink */
+    #yesBtn {
+      background: linear-gradient(135deg, #d81b60, #ad1457);
+      color: white;
+      box-shadow: 0 14px 34px rgba(173, 20, 87, 0.55);
+    }
+
+    #yesBtn:hover {
+      transform: translateY(-4px) scale(1.08);
+      box-shadow: 0 20px 46px rgba(173, 20, 87, 0.7);
+    }
+
+    /* NO button adjusted */
+    #noBtn {
+      background: linear-gradient(135deg, #ffe3ec, #ffc1d6);
+      color: #880e4f;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.22);
+    }
+
+    #noBtn:hover {
+      transform: translateY(-4px) scale(1.05);
+    }
+
+    /* music button */
+    #musicBtn {
+      position: fixed;
+      bottom: 22px;
+      right: 22px;
+      padding: 14px 22px;
+      font-size: 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.95);
+      color: #ad1457;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+      border: 1px solid rgba(173,20,87,0.4);
+      backdrop-filter: blur(8px);
+      z-index: 4;
+      transition: all 0.25s ease;
+    }
+
+    #musicBtn:hover {
+      transform: translateY(-4px) scale(1.07);
+    }
+
+    #musicBtn::after {
+      content: "🎀";
+      position: absolute;
+      top: -16px;
+      right: -12px;
+      font-size: 18px;
+      transform: rotate(45deg);
+    }
+
+    /* heart trail */
+    .heart {
+      position: fixed;
+      width: 52px;
+      height: 52px;
+      pointer-events: none;
+      animation: floatUp 1200ms linear forwards;
+      z-index: 1;
+      object-fit: contain;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,0.3));
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-46px) scale(1.7); opacity: 0; }
+    }
+
+    .fullscreen-yes {
+      position: fixed !important;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      border-radius: 0;
+      font-size: 58px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      background: linear-gradient(135deg, #d81b60, #ad1457);
+      color: white;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+
+  <div>
+    <h1>Khushi will you be my valentine?</h1>
+
+    <div class="buttons">
+      <button id="yesBtn">Yes</button>
+      <button id="noBtn">No</button>
+    </div>
+  </div>
+
+  <button id="musicBtn">Play Music</button>
+
+  <audio id="song" src="music1.mp3"></audio>
+
+  <script>
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+    const musicBtn = document.getElementById('musicBtn');
+    const song = document.getElementById('song');
+
+    const noTexts = [
+      "kyuuu",
+      "badmeshi kregi",
+      "pitti kruga",
+      "bhut ho gya mazak ab",
+      "happp",
+      "bssss ab",
+      "drama band karo",
+      "plsssss",
+      "bye"
+    ];
+
+    let noIndex = 0;
+    let yesScale = 1;
+
+    noBtn.addEventListener('click', () => {
+      yesScale += 0.4;
+      yesBtn.style.transform = `scale(${yesScale})`;
+
+      if (noIndex < noTexts.length) {
+        noBtn.textContent = noTexts[noIndex];
+        noIndex++;
+      }
+
+      if (noIndex === noTexts.length) {
+        setTimeout(() => {
+          noBtn.remove();
+          yesBtn.classList.add('fullscreen-yes');
+          document.body.appendChild(yesBtn);
+        }, 300);
+      }
+    });
+
+    yesBtn.addEventListener('click', () => {
+      window.location.href = "next.html";
+    });
+
+    musicBtn.addEventListener('click', () => {
+      if (song.paused) {
+        song.play();
+        musicBtn.textContent = "Pause Music";
+      } else {
+        song.pause();
+        musicBtn.textContent = "Play Music";
+      }
+    });
+
+    const trailImages = ['heart1.png','heart2.png','heart3.png','heart4.png'];
+
+    let lastSpawn = 0;
+    const spawnDelay = 140;
+
+    document.addEventListener('mousemove', (e) => {
+      const now = Date.now();
+      if (now - lastSpawn < spawnDelay) return;
+      lastSpawn = now;
+
+      const img = document.createElement('img');
+      const pick = trailImages[Math.floor(Math.random() * trailImages.length)];
+      img.src = pick;
+      img.className = 'heart';
+      img.style.left = e.clientX + 'px';
+      img.style.top = e.clientY + 'px';
+      document.body.appendChild(img);
+
+      setTimeout(() => img.remove(), 1200);
+    });
+  </script>
+</body>
+</html>
